@@ -1,8 +1,9 @@
-import sys
 import pygame
+from pygame.sprite import Group
 
 from settings import Settings
 from ship import Ship
+import game_functions as gf
 
 def run_game():
 	"""initialize pygame, settings, and screen"""	
@@ -10,20 +11,17 @@ def run_game():
 	ai_settings = Settings()
 	screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
 	pygame.display.set_caption("Space Invaders")
-	#make a ship
-	ship = Ship(screen)
+	# Make a ship
+	ship = Ship(ai_settings, screen)
+	# Make a bullet group
+	bullets = Group()
 
-	# bg_color = ai_settings.bg_color
-	#start the main game loop
+	# Start the main game loop
 	while True:
-		#redraw screen each time
-		screen.fill(ai_settings.bg_color)
-		ship.blitme()
+		gf.check_events(ai_settings, screen, ship, bullets)
+		ship.update()
+		gf.update_bullets(bullets)
 
-		for event in pygame.event.get():
-			if event == pygame.QUIT:
-				sys.exit()
-		#display most recently drawn version of screen
-		pygame.display.flip()
+		gf.update_screen(ai_settings, screen, ship, bullets)
 run_game()
 
